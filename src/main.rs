@@ -14,7 +14,7 @@ fn handle(mut stream: TcpStream) {
         "/" => (
             "200 OK",
             "text/html; charset=utf-8",
-            br#"<!doctype html>
+            r#"<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
@@ -29,7 +29,7 @@ fn handle(mut stream: TcpStream) {
   </style>
 </head>
 <body><main><h1>Hello, Ragdoll!</h1><img src="/cat.png" alt="一只蓝眼睛的布偶猫"></main></body>
-</html>"#,
+</html>"#.as_bytes(),
         ),
         _ => ("404 Not Found", "text/plain; charset=utf-8", b"Not Found"),
     };
