@@ -1,4 +1,4 @@
-name: Rust Hello World
+name: Rust Ragdoll Demo
 
 on:
   push:
@@ -10,5 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Hello World
-        run: cargo run
+      - name: Build and verify web page
+        run: |
+          cargo run > server.log 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid 2>/dev/null || true' EXIT
+          for attempt in {1..20}; do
+            curl --fail --silent http://127.0.0.1:3000/ | grep --quiet "Hello, Ragdoll!" && break
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:3000/cat.png --output cat-check.png
+          test -s cat-check.png
+          cat server.log
